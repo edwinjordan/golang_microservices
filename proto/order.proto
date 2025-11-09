@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package order;
+
+option go_package = "github.com/edwinjordan/golang_microservices/services/order/pkg/pb";
+
+service OrderService {
+  rpc GetOrder(GetOrderRequest) returns (GetOrderResponse);
+  rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse);
+}
+
+message GetOrderRequest {
+  string id = 1;
+}
+
+message GetOrderResponse {
+  string id = 1;
+  string user_id = 2;
+  string product = 3;
+  double amount = 4;
+  string status = 5;
+}
+
+message CreateOrderRequest {
+  string user_id = 1;
+  string product = 2;
+  double amount = 3;
+}
+
+message CreateOrderResponse {
+  string id = 1;
+  string user_id = 2;
+  string product = 3;
+  double amount = 4;
+  string status = 5;
+}
