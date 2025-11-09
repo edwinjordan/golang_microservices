@@ -1,6 +1,8 @@
 module github.com/edwinjordan/golang_microservices/services/payment
 
-go 1.22
+go 1.24.0
+
+toolchain go1.24.9
 
 require (
 	github.com/edwinjordan/golang_microservices/services/order v0.0.0-00010101000000-000000000000
