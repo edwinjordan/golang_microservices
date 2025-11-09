@@ -1,0 +1,28 @@
+FROM golang:1.22-alpine AS builder
+
+# Update packages and install ca-certificates
+RUN apk update && apk add --no-cache ca-certificates git
+
+WORKDIR /app
+
+# Copy necessary service dependencies
+COPY services/order services/order
+COPY services/payment services/payment
+
+# Build the payment service
+WORKDIR /app/services/payment
+RUN go mod download
+RUN CGO_ENABLED=0 GOOS=linux go build -o /app/payment-service ./cmd/main.go
+
+# Final stage
+FROM alpine:latest
+
+RUN apk update && apk add --no-cache ca-certificates
+
+WORKDIR /root/
+
+COPY --from=builder /app/payment-service .
+
+EXPOSE 8083 9093
+
+CMD ["./payment-service"]

@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package payment;
+
+option go_package = "github.com/edwinjordan/golang_microservices/services/payment/pkg/pb";
+
+service PaymentService {
+  rpc ProcessPayment(ProcessPaymentRequest) returns (ProcessPaymentResponse);
+  rpc GetPayment(GetPaymentRequest) returns (GetPaymentResponse);
+}
+
+message ProcessPaymentRequest {
+  string order_id = 1;
+  double amount = 2;
+}
+
+message ProcessPaymentResponse {
+  string id = 1;
+  string order_id = 2;
+  double amount = 3;
+  string status = 4;
+}
+
+message GetPaymentRequest {
+  string id = 1;
+}
+
+message GetPaymentResponse {
+  string id = 1;
+  string order_id = 2;
+  double amount = 3;
+  string status = 4;
+}

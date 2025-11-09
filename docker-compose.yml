@@ -1,0 +1,111 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Databases
+  postgres-users:
+    image: postgres:15-alpine
+    container_name: postgres-users
+    environment:
+      POSTGRES_USER: userservice
+      POSTGRES_PASSWORD: userpass123
+      POSTGRES_DB: users_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - users_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U userservice -d users_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres-orders:
+    image: postgres:15-alpine
+    container_name: postgres-orders
+    environment:
+      POSTGRES_USER: orderservice
+      POSTGRES_PASSWORD: orderpass123
+      POSTGRES_DB: orders_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - orders_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U orderservice -d orders_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres-payments:
+    image: postgres:15-alpine
+    container_name: postgres-payments
+    environment:
+      POSTGRES_USER: paymentservice
+      POSTGRES_PASSWORD: paymentpass123
+      POSTGRES_DB: payments_db
+    ports:
+      - "5435:5432"
+    volumes:
+      - payments_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U paymentservice -d payments_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # User Service
+  user-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.user
+    container_name: user-service
+    env_file:
+      - .env
+    ports:
+      - "8081:8081"
+      - "9091:9091"
+    depends_on:
+      postgres-users:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Order Service
+  order-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.order
+    container_name: order-service
+    env_file:
+      - .env
+    ports:
+      - "8082:8082"
+      - "9092:9092"
+    depends_on:
+      postgres-orders:
+        condition: service_healthy
+      user-service:
+        condition: service_started
+    restart: unless-stopped
+
+  # Payment Service
+  payment-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.payment
+    container_name: payment-service
+    env_file:
+      - .env
+    ports:
+      - "8083:8083"
+      - "9093:9093"
+    depends_on:
+      postgres-payments:
+        condition: service_healthy
+      order-service:
+        condition: service_started
+    restart: unless-stopped
+
+volumes:
+  users_data:
+  orders_data:
+  payments_data:
