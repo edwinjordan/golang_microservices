@@ -1,9 +1,9 @@
 FROM golang:1.22-alpine AS builder
 
-WORKDIR /app
+# Update packages and install ca-certificates
+RUN apk update && apk add --no-cache ca-certificates git
 
-# Copy go workspace files
-COPY go.work go.work
+WORKDIR /app
 
 # Copy necessary service dependencies
 COPY services/order services/order
@@ -17,7 +17,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /app/payment-service ./cmd/main.go
 # Final stage
 FROM alpine:latest
 
-RUN apk --no-cache add ca-certificates
+RUN apk update && apk add --no-cache ca-certificates
 
 WORKDIR /root/
 

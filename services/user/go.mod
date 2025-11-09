@@ -1,6 +1,6 @@
 module github.com/edwinjordan/golang_microservices/services/user
 
-go 1.24.9
+go 1.22
 
 require (
 	github.com/gin-gonic/gin v1.11.0

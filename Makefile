@@ -35,7 +35,7 @@ test: ## Run tests for all services
 
 up: ## Start all services with docker-compose
 	@echo "Starting all services..."
-	@docker-compose up -d
+	@docker compose up -d
 	@echo "All services started. Access:"
 	@echo "  User Service:    http://localhost:8081/health"
 	@echo "  Order Service:   http://localhost:8082/health"
@@ -43,21 +43,21 @@ up: ## Start all services with docker-compose
 
 down: ## Stop all services
 	@echo "Stopping all services..."
-	@docker-compose down
+	@docker compose down
 	@echo "All services stopped"
 
 clean: ## Clean up build artifacts and docker volumes
 	@echo "Cleaning up..."
 	@rm -rf bin/
-	@docker-compose down -v
+	@docker compose down -v
 	@echo "Cleanup completed"
 
 logs: ## Show logs from all services
-	@docker-compose logs -f
+	@docker compose logs -f
 
 restart: down up ## Restart all services
 
 rebuild: ## Rebuild and restart all services
 	@echo "Rebuilding all services..."
-	@docker-compose up -d --build
+	@docker compose up -d --build
 	@echo "All services rebuilt and restarted"
